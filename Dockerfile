@@ -26,7 +26,8 @@ ENV REACT_APP_BUILD_COMMIT_SHA=${COMMIT_SHA:-}
 # Download dependencies
 COPY ui /app/ui
 WORKDIR /app/ui
-RUN npm ci --omit=dev --ignore-scripts \
+RUN set -x \
+  && npm ci --omit=dev --ignore-scripts \
   # Build frontend
   && npm run build -- --base=$UI_PUBLIC_URL
 
@@ -46,7 +47,8 @@ ENV PATH="${GOPATH}/bin:${PATH}"
 ENV CGO_ENABLED=1
 
 # Download dependencies
-RUN chmod +x /app/scripts/*.sh \
+RUN set -x \
+  && chmod +x /app/scripts/*.sh \
   && source /app/scripts/set_compiler_env.sh \
   && /app/scripts/install_build_dependencies.sh \
   && go env \
@@ -65,7 +67,8 @@ FROM ui AS dev-ui
 
 ### Build dev image for API ###
 FROM api AS dev-api
-RUN source /app/scripts/set_compiler_env.sh \
+RUN set -x \
+  && source /app/scripts/set_compiler_env.sh \
   && /app/scripts/install_runtime_dependencies.sh \
   ## Install dev tools
   && apt update \
@@ -81,12 +84,16 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 COPY scripts/install_runtime_dependencies.sh /app/scripts/
 
 # Create a user to run Photoview server
-RUN groupadd -g 999 photoview \
+RUN set -x \
+  && groupadd -g 999 photoview \
   && useradd -r -u 999 -g photoview -m photoview \
   # Required dependencies
   && chmod +x /app/scripts/*.sh \
   && /app/scripts/install_runtime_dependencies.sh \
-  # Add Debian-Multimedia Repository
+  # Remove problematic repository
+  && rm -f /etc/apt/sources.list.d/graphics_darktable.list \
+  && sed -i '/download.opensuse.org\/repositories\/graphics/d' /etc/apt/sources.list \
+  # Add Debian-Multimedia Repository and its key
   && echo "deb http://www.deb-multimedia.org bookworm main non-free" | tee /etc/apt/sources.list.d/deb-multimedia.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends gnupg \
