@@ -86,7 +86,9 @@ RUN groupadd -g 999 photoview \
   # Required dependencies
   && chmod +x /app/scripts/*.sh \
   && /app/scripts/install_runtime_dependencies.sh \
-  # Remove problematic repository and update GPG keys
+  # Remove problematic repository
+  && rm -f /etc/apt/sources.list.d/graphics_darktable.list \
+  && sed -i '/download.opensuse.org\/repositories\/graphics/d' /etc/apt/sources.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends gnupg dirmngr \
   && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 040524A84C70D8B5 \
