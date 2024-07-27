@@ -86,8 +86,12 @@ RUN groupadd -g 999 photoview \
   # Required dependencies
   && chmod +x /app/scripts/*.sh \
   && /app/scripts/install_runtime_dependencies.sh \
-  # Remove problematic repository
+  # Remove problematic repository and update GPG keys
   && rm -f /etc/apt/sources.list.d/graphics_darktable.list \
+  && apt-key del 040524A84C70D8B5 \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends gnupg \
+  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 040524A84C70D8B5 \
   && apt-get update \
   && apt-get install -y sqlite3 \
   && rm -rf /var/lib/apt/lists/*
