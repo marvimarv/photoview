@@ -54,7 +54,6 @@ RUN chmod +x /app/scripts/*.sh \
   # Patch go-face
   && sed -i 's/-march=native//g' ${GOPATH}/pkg/mod/github.com/!kagami/go-face*/face.go \
   # Build dependencies that use CGO
-  ## ÄNDERUNG HIER:
   && go install \
     github.com/mattn/go-sqlite3 \
     github.com/Kagami/go-face \
@@ -87,7 +86,8 @@ RUN groupadd -g 999 photoview \
   # Required dependencies
   && chmod +x /app/scripts/*.sh \
   && /app/scripts/install_runtime_dependencies.sh \
-  ## ÄNDERUNG HIER:
+  # Remove problematic repository
+  && rm -f /etc/apt/sources.list.d/graphics_darktable.list \
   && apt-get update \
   && apt-get install -y sqlite3 \
   && rm -rf /var/lib/apt/lists/*
