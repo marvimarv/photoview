@@ -54,6 +54,7 @@ RUN chmod +x /app/scripts/*.sh \
   # Patch go-face
   && sed -i 's/-march=native//g' ${GOPATH}/pkg/mod/github.com/!kagami/go-face*/face.go \
   # Build dependencies that use CGO
+  ## ÄNDERUNG HIER:
   && go install \
     github.com/mattn/go-sqlite3 \
     github.com/Kagami/go-face \
@@ -85,7 +86,11 @@ RUN groupadd -g 999 photoview \
   && useradd -r -u 999 -g photoview -m photoview \
   # Required dependencies
   && chmod +x /app/scripts/*.sh \
-  && /app/scripts/install_runtime_dependencies.sh
+  && /app/scripts/install_runtime_dependencies.sh \
+  ## ÄNDERUNG HIER:
+  && apt-get update \
+  && apt-get install -y sqlite3 \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/photoview
 COPY api/data /app/data
