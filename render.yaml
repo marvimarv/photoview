@@ -9,6 +9,8 @@ services:
         value: /home/photoview/database/photoview.db
       - key: HOST_PHOTOVIEW_LOCATION
         value: /home/photoview
+      - key: HOST_PHOTOVIEW_MEDIA_ROOT
+        value: /home/photoview/media  # Dies ist der Pfad, den wir für die Medien verwenden
     buildCommand: make build
     startCommand: make start
     volumes:
@@ -16,3 +18,5 @@ services:
         name: photoview-database
       - path: /home/photoview/storage
         name: photoview-storage
+      - path: /home/photoview/media  # Füge dieses Volume für die Medien hinzu
+        name: photoview-media
