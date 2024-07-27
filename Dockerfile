@@ -86,14 +86,13 @@ RUN groupadd -g 999 photoview \
   # Required dependencies
   && chmod +x /app/scripts/*.sh \
   && /app/scripts/install_runtime_dependencies.sh \
-  # Remove problematic repository
-  && rm -f /etc/apt/sources.list.d/graphics_darktable.list \
-  && sed -i '/download.opensuse.org\/repositories\/graphics/d' /etc/apt/sources.list \
+  # Add Debian-Multimedia Repository
+  && echo "deb http://www.deb-multimedia.org bookworm main non-free" | tee /etc/apt/sources.list.d/deb-multimedia.list \
   && apt-get update \
-  && apt-get install -y --no-install-recommends gnupg dirmngr \
-  && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 040524A84C70D8B5 \
+  && apt-get install -y --no-install-recommends gnupg \
+  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5C808C2B65558117 \
   && apt-get update \
-  && apt-get install -y sqlite3 \
+  && apt-get install -y sqlite3 darktable \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/photoview
