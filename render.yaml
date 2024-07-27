@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: photoview
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PHOTOVIEW_SQLITE_PATH
+        value: /home/photoview/database/photoview.db
+      - key: HOST_PHOTOVIEW_LOCATION
+        value: /home/photoview
+    buildCommand: make build
+    startCommand: make start
+    volumes:
+      - path: /home/photoview/database
+        name: photoview-database
+      - path: /home/photoview/storage
+        name: photoview-storage
