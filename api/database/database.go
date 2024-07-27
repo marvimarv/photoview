@@ -49,11 +49,12 @@ func GetPostgresAddress(addressString string) (*url.URL, error) {
 
 	return address, nil
 }
-
 func GetSqliteAddress(path string) (*url.URL, error) {
 	if path == "" {
 		path = "photoview.db"
 	}
+
+	log.Printf("Attempting to use SQLite database at path: %s", path)
 
 	address, err := url.Parse(path)
 	if err != nil {
@@ -63,12 +64,11 @@ func GetSqliteAddress(path string) (*url.URL, error) {
 	queryValues := address.Query()
 	queryValues.Add("cache", "shared")
 	queryValues.Add("mode", "rwc")
-	// queryValues.Add("_busy_timeout", "60000") // 1 minute
 	queryValues.Add("_journal_mode", "WAL")    // Write-Ahead Logging (WAL) mode
 	queryValues.Add("_locking_mode", "NORMAL") // allows concurrent reads and writes
 	address.RawQuery = queryValues.Encode()
 
-	// log.Panicf("%s", address.String())
+	log.Printf("Final SQLite database address: %s", address.String())
 
 	return address, nil
 }
