@@ -90,9 +90,9 @@ RUN set -x \
   # Required dependencies
   && chmod +x /app/scripts/*.sh \
   && /app/scripts/install_runtime_dependencies.sh \
-  # Remove problematic repository
-  && rm -f /etc/apt/sources.list.d/graphics_darktable.list \
-  && sed -i '/download.opensuse.org\/repositories\/graphics/d' /etc/apt/sources.list \
+  # Remove problematic repository if it exists
+  && rm -f /etc/apt/sources.list.d/graphics_darktable.list || true \
+  && [ ! -f /etc/apt/sources.list ] || sed -i '/download.opensuse.org\/repositories\/graphics/d' /etc/apt/sources.list \
   # Add Debian-Multimedia Repository and its key
   && echo "deb http://www.deb-multimedia.org bookworm main non-free" | tee /etc/apt/sources.list.d/deb-multimedia.list \
   && apt-get update \
