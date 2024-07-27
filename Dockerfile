@@ -85,7 +85,10 @@ RUN groupadd -g 999 photoview \
   && useradd -r -u 999 -g photoview -m photoview \
   # Required dependencies
   && chmod +x /app/scripts/*.sh \
-  && /app/scripts/install_runtime_dependencies.sh
+  && /app/scripts/install_runtime_dependencies.sh \
+  # Create database directory and set permissions
+  && mkdir -p /home/photoview/database \
+  && chown -R photoview:photoview /home/photoview/database
 
 WORKDIR /home/photoview
 COPY api/data /app/data
