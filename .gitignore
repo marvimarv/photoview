@@ -7,7 +7,7 @@ cache/
 photoview.db
 photoview.db-*
 
-.env
+
 testing.env
 
 # docker
